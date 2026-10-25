@@ -15,75 +15,70 @@ public class Biblioteca {
     public static void main() {
         ArrayList<String> datosE = leerArchivo("./estudiantes");
         ArrayList<String> datosL = leerArchivo("./libros");
-        
+
         Biblioteca b = new Biblioteca(crearEstudiantes(datosE), crearLibros(datosL));
-        
-    
+
     }
-    public boolean existeEstudiante(String codigoRequerido){
+
+    public boolean existeEstudiante(String codigoRequerido) {
         boolean existe = false;
-        for (Estudiante e : estudiantes){
-            if ((e.codigo).equals(codigoRequerido)){
+        for (Estudiante e : estudiantes) {
+            if ((e.codigo).equals(codigoRequerido)) {
                 existe = true;
-                }
+            }
         }
         return existe;
     }
-    
-    
-    public static ArrayList<Estudiante> crearEstudiantes (ArrayList<String> datos){
 
-            ArrayList<Estudiante> estudiantes= new ArrayList<>();
-            String csvSplitBy=",";
-            for(String line:datos)
-            {
+    public static ArrayList<Estudiante> crearEstudiantes(ArrayList<String> datos) {
+
+        ArrayList<Estudiante> estudiantes = new ArrayList<>();
+        String csvSplitBy = ",";
+        for (String line : datos) {
             String[] datosA = line.split(csvSplitBy);
             String codigo = datosA[0].trim();
             String nombre = datosA[1].trim();
 
             if ((datosA[2].trim()).equalsIgnoreCase("Ingenieria")) {
-               estudiantes.add(new Ingenieria(codigo, nombre));
+                estudiantes.add(new Ingenieria(codigo, nombre));
             } else if ((datosA[2].trim()).equalsIgnoreCase("LicenciadoEnMatematicas")) {
-               estudiantes.add(new LicenciadoEnMatematicas(codigo,nombre));
-            }
-             else if ((datosA[2].trim()).equalsIgnoreCase("LicenciadoEnMusica")) {
-               estudiantes.add(new LicenciadoEnMusica(codigo, nombre));
-            }
-             else if ((datosA[2].trim()).equalsIgnoreCase("Doctor")) {
-               estudiantes.add(new Doctor(codigo, nombre));
+                estudiantes.add(new LicenciadoEnMatematicas(codigo, nombre));
+            } else if ((datosA[2].trim()).equalsIgnoreCase("LicenciadoEnMusica")) {
+                estudiantes.add(new LicenciadoEnMusica(codigo, nombre));
+            } else if ((datosA[2].trim()).equalsIgnoreCase("Doctor")) {
+                estudiantes.add(new Doctor(codigo, nombre));
             }
         }
-          return estudiantes;
-        }
-    
+        return estudiantes;
+    }
+
     public static ArrayList<Libro> crearLibros(ArrayList<String> datos) {
-            String csvSplitBy = ",";
-            ArrayList<Libro> libros= new ArrayList<>();
-            for (String line:datos) {
-                String[] datosA = line.split(csvSplitBy);
+        String csvSplitBy = ",";
+        ArrayList<Libro> libros = new ArrayList<>();
+        for (String line : datos) {
+            String[] datosA = line.split(csvSplitBy);
 
-                String codigo = datosA[0].trim();
-                String nombre = datosA[1].trim();
-                String anioPublicacion = datosA[2].trim();
-                int cantidadDisponible = Integer.parseInt(datosA[3].trim());
+            String codigo = datosA[0].trim();
+            String nombre = datosA[1].trim();
+            String anioPublicacion = datosA[2].trim();
+            int cantidadDisponible = Integer.parseInt(datosA[3].trim());
 
-
+            if ((datosA[4].trim()).equalsIgnoreCase("Matematica")) {
+                libros.add(new Matematica(codigo, nombre, anioPublicacion, cantidadDisponible));
+            } else if ((datosA[4].trim()).equalsIgnoreCase("Literatura")) {
+                libros.add(new Literatura(codigo, nombre, anioPublicacion, cantidadDisponible));
                 if ((datosA[4].trim()).equalsIgnoreCase("Matematica")) {
-                    libros.add(new Matematica(codigo,nombre,anioPublicacion,cantidadDisponible));
+                    libros.add(new Matematica(codigo, nombre, anioPublicacion, cantidadDisponible));
                 } else if ((datosA[4].trim()).equalsIgnoreCase("Literatura")) {
-                    libros.add(new Literatura(codigo,nombre,anioPublicacion,cantidadDisponible));
-                if ((datosA[4].trim()).equalsIgnoreCase("Matematica")) {
-                    libros.add(new Matematica(codigo,nombre,anioPublicacion,cantidadDisponible));
-                } else if ((datosA[4].trim()).equalsIgnoreCase("Literatura")) {
-                    libros.add(new Literatura(codigo,nombre,anioPublicacion,cantidadDisponible));
+                    libros.add(new Literatura(codigo, nombre, anioPublicacion, cantidadDisponible));
                 } else if ((datosA[4].trim()).equalsIgnoreCase("Biologia")) {
-                    libros.add(new Biologia(codigo,nombre,anioPublicacion,cantidadDisponible));
+                    libros.add(new Biologia(codigo, nombre, anioPublicacion, cantidadDisponible));
                 } else if ((datosA[4].trim()).equalsIgnoreCase("CienciasSociales")) {
-                    libros.add(new CienciasSociales(codigo,nombre,anioPublicacion,cantidadDisponible));
-                }
+                    libros.add(new CienciasSociales(codigo, nombre, anioPublicacion, cantidadDisponible));
                 }
             }
-       return libros;
+        }
+        return libros;
     }
 
     public static ArrayList<String> leerArchivo(String csvFile) {
@@ -116,33 +111,33 @@ class Libro {
         this.anioPublicacion = anioPublicacion;
         this.cantidadDisponible = cantidadDisponible;
     }
-    
+
     public void imprimir() {
         System.out.println(codigo + ", " + nombre + ", " + anioPublicacion + ", " + cantidadDisponible);
     }
 }
 
 class Matematica extends Libro {
- public Matematica (String codigo, String nombre, String anioPublicacion, int cantidadDisponible ){
-      super (codigo,nombre,anioPublicacion,cantidadDisponible); 
+    public Matematica(String codigo, String nombre, String anioPublicacion, int cantidadDisponible) {
+        super(codigo, nombre, anioPublicacion, cantidadDisponible);
     }
 }
 
 class Literatura extends Libro {
-public Literatura (String codigo, String nombre, String anioPublicacion, int cantidadDisponible ){
-      super (codigo,nombre,anioPublicacion,cantidadDisponible); 
+    public Literatura(String codigo, String nombre, String anioPublicacion, int cantidadDisponible) {
+        super(codigo, nombre, anioPublicacion, cantidadDisponible);
     }
 }
 
 class Biologia extends Libro {
-public Biologia (String codigo, String nombre, String anioPublicacion, int cantidadDisponible ){
-      super (codigo,nombre,anioPublicacion,cantidadDisponible);
+    public Biologia(String codigo, String nombre, String anioPublicacion, int cantidadDisponible) {
+        super(codigo, nombre, anioPublicacion, cantidadDisponible);
     }
 }
 
 class CienciasSociales extends Libro {
-public CienciasSociales (String codigo,String nombre,String  anioPublicacion,int cantidadDisponible ){
-      super (codigo,nombre,anioPublicacion,cantidadDisponible);  
+    public CienciasSociales(String codigo, String nombre, String anioPublicacion, int cantidadDisponible) {
+        super(codigo, nombre, anioPublicacion, cantidadDisponible);
     }
 }
 
@@ -179,7 +174,7 @@ abstract class Estudiante {
 
     public void imprimirPrestados() {
         System.out.println("Libros prestados a" + nombre + ":");
-        for(var libro: prestamos) {
+        for (var libro : prestamos) {
             libro.imprimir();
         }
     }
@@ -192,6 +187,7 @@ class Ingenieria extends Estudiante {
         this.maxPrestamos = 5;
     }
 }
+
 class LicenciadoEnMatematicas extends Estudiante {
     public LicenciadoEnMatematicas(String codigo, String nombre) {
         super(codigo, nombre);
