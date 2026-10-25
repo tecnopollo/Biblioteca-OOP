@@ -26,6 +26,7 @@ public class Biblioteca {
         while (i != 0){
             imprimirMenu();
             i = s.nextInt();
+            s.nextLine();
             switch (i){
                 case 1 : this.imprimirEstudiantes();
                     break;
