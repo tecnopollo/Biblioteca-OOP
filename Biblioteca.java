@@ -12,23 +12,74 @@ public class Biblioteca {
         this.libros = libros;
     }
 
-    public static void main() {
-        ArrayList<String> datosE = leerArchivo("./estudiantes");
-        ArrayList<String> datosL = leerArchivo("./libros");
-
+    public static void main(String[] args) {
+        ArrayList<String> datosE = leerArchivo("./estudiantes.csv");
+        ArrayList<String> datosL = leerArchivo("./libros.csv");
         Biblioteca b = new Biblioteca(crearEstudiantes(datosE), crearLibros(datosL));
-
+        b.nav();
+  
     }
-
-    public boolean existeEstudiante(String codigoRequerido) {
-        boolean existe = false;
-        for (Estudiante e : estudiantes) {
-            if ((e.codigo).equals(codigoRequerido)) {
-                existe = true;
+    public void nav (){
+        int i = -1;
+        Scanner s = new Scanner(System.in);
+        
+        while (i != 0){
+            imprimirMenu();
+            i = s.nextInt();
+            switch (i){
+                case 1 : this.imprimirEstudiantes();
+                    break;
+                case 2 : this.imprimLibros();
+                    break;
+                case 3 :this.hacerPrestamo(s);
+                    break;
+                case 4 : this.hacerDevolucion(s);
+                    break;    
             }
         }
-        return existe;
+        s.close(); 
     }
+    public void imprimirMenu() {
+        System.out.println("----------Menu----------");
+        System.out.println("0] Salir del menu");
+        System.out.println("1] Imprimir estudiantes registrados en biblioteca");
+        System.out.println("2] Imprimir libros registrados en biblioteca");
+        System.out.println("3] Prestamo de libros");
+        System.out.println("4] Devolucion de libros");
+    }
+
+    public void imprimirEstudiantes() {
+        for (var e : estudiantes) {
+            e.imprimir();
+        }
+    }
+
+    public void imprimLibros() {
+        for (var libro : libros) {
+            libro.imprimir();
+        }
+    }
+
+    public Estudiante buscarEstudiante(String codigoRequerido) {
+
+        for (var e : estudiantes) {
+            if ((e.codigo).equals(codigoRequerido)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public Libro buscarLibro(String codigoRequerido) {
+
+        for (var l : libros) {
+            if ((l.codigo).equals(codigoRequerido)) {
+                return l;
+            }
+        }
+        return null;
+    }
+
 
     public static ArrayList<Estudiante> crearEstudiantes(ArrayList<String> datos) {
 
@@ -38,14 +89,15 @@ public class Biblioteca {
             String[] datosA = line.split(csvSplitBy);
             String codigo = datosA[0].trim();
             String nombre = datosA[1].trim();
+            String carrera = datosA[2].trim();
 
-            if ((datosA[2].trim()).equalsIgnoreCase("Ingenieria")) {
+            if (carrera.equalsIgnoreCase("Ingenieria")) {
                 estudiantes.add(new Ingenieria(codigo, nombre));
-            } else if ((datosA[2].trim()).equalsIgnoreCase("LicenciadoEnMatematicas")) {
+            } else if (carrera.equalsIgnoreCase("LicenciadoEnMatematicas")) {
                 estudiantes.add(new LicenciadoEnMatematicas(codigo, nombre));
-            } else if ((datosA[2].trim()).equalsIgnoreCase("LicenciadoEnMusica")) {
+            } else if (carrera.equalsIgnoreCase("LicenciadoEnMusica")) {
                 estudiantes.add(new LicenciadoEnMusica(codigo, nombre));
-            } else if ((datosA[2].trim()).equalsIgnoreCase("Doctor")) {
+            } else if (carrera.equalsIgnoreCase("Doctor")) {
                 estudiantes.add(new Doctor(codigo, nombre));
             }
         }
@@ -62,20 +114,16 @@ public class Biblioteca {
             String nombre = datosA[1].trim();
             String anioPublicacion = datosA[2].trim();
             int cantidadDisponible = Integer.parseInt(datosA[3].trim());
+            String tipo = datosA[4].trim();
 
-            if ((datosA[4].trim()).equalsIgnoreCase("Matematica")) {
+            if (tipo.equalsIgnoreCase("Matematica")) {
                 libros.add(new Matematica(codigo, nombre, anioPublicacion, cantidadDisponible));
-            } else if ((datosA[4].trim()).equalsIgnoreCase("Literatura")) {
+            } else if (tipo.equalsIgnoreCase("Literatura")) {
                 libros.add(new Literatura(codigo, nombre, anioPublicacion, cantidadDisponible));
-                if ((datosA[4].trim()).equalsIgnoreCase("Matematica")) {
-                    libros.add(new Matematica(codigo, nombre, anioPublicacion, cantidadDisponible));
-                } else if ((datosA[4].trim()).equalsIgnoreCase("Literatura")) {
-                    libros.add(new Literatura(codigo, nombre, anioPublicacion, cantidadDisponible));
-                } else if ((datosA[4].trim()).equalsIgnoreCase("Biologia")) {
-                    libros.add(new Biologia(codigo, nombre, anioPublicacion, cantidadDisponible));
-                } else if ((datosA[4].trim()).equalsIgnoreCase("CienciasSociales")) {
-                    libros.add(new CienciasSociales(codigo, nombre, anioPublicacion, cantidadDisponible));
-                }
+            } else if (tipo.equalsIgnoreCase("Biologia")) {
+                libros.add(new Biologia(codigo, nombre, anioPublicacion, cantidadDisponible));
+            } else if (tipo.equalsIgnoreCase("CienciasSociales")) {
+                libros.add(new CienciasSociales(codigo, nombre, anioPublicacion, cantidadDisponible));
             }
         }
         return libros;
@@ -96,6 +144,46 @@ public class Biblioteca {
             System.out.println("Error: " + e.getMessage());
         }
         return lineas;
+    }
+
+    void hacerPrestamo(Scanner s) {
+        
+        // Busca el estudiante
+        System.out.print("Codigo del estudiante: ");
+        String codigoE = s.nextLine().trim();
+        Estudiante estudiante = buscarEstudiante(codigoE);
+        if (estudiante == null) {
+            System.out.println("El estudiante del código solicitado no existe");
+            return;
+        }
+
+        // Busca el libro 
+        System.out.print("Codigo del libro: ");
+        String codigoL = s.nextLine().trim();
+        Libro libro = buscarLibro(codigoL);
+        if(libro == null) {
+            System.out.println("EL libro del código solicitado no existe");
+            return;
+        }
+        estudiante.prestamo(libro);
+    }
+
+    void hacerDevolucion(Scanner s) {
+
+        // Busca el estudiante
+        System.out.print("Codigo del estudiante: ");
+        String codigoE = s.nextLine().trim();
+        Estudiante estudiante = buscarEstudiante(codigoE);
+        if (estudiante == null) {
+            System.out.println("El estudiante del código solicitado no existe");
+            return;
+        }       
+
+        // Busca el libro
+        estudiante.imprimirPrestados();
+        System.out.print("Indique el indice del libro a devolver: ");
+        int indice = s.nextInt(); 
+        estudiante.devolucion(indice);
     }
 }
 
@@ -146,6 +234,7 @@ abstract class Estudiante {
     String nombre;
     int maxPrestamos;
     ArrayList<Libro> prestamos;
+    String carrera;
 
     public Estudiante(String codigo, String nombre) {
         this.codigo = codigo;
@@ -154,7 +243,7 @@ abstract class Estudiante {
     }
 
     public void prestamo(Libro lib) {
-        if (maxPrestamos >= prestamos.size()) {
+        if (prestamos.size() >= maxPrestamos) {
             System.out.println("No se puede prestar el libro");
         } else if (lib.cantidadDisponible == 0) {
             System.out.println("No hay ejemplares del libro disponible para el prestamo");
@@ -178,6 +267,10 @@ abstract class Estudiante {
             libro.imprimir();
         }
     }
+
+    public void imprimir() {
+        System.out.println(codigo + ", " + nombre + ", " + carrera);
+    }
 }
 
 class Ingenieria extends Estudiante {
@@ -185,6 +278,7 @@ class Ingenieria extends Estudiante {
     public Ingenieria(String codigo, String nombre) {
         super(codigo, nombre);
         this.maxPrestamos = 5;
+        carrera = "Ingenieria";
     }
 }
 
@@ -192,6 +286,7 @@ class LicenciadoEnMatematicas extends Estudiante {
     public LicenciadoEnMatematicas(String codigo, String nombre) {
         super(codigo, nombre);
         this.maxPrestamos = 7;
+        carrera = "Licenciatura en matematicas";
     }
 }
 
@@ -199,6 +294,7 @@ class LicenciadoEnMusica extends Estudiante {
     public LicenciadoEnMusica(String codigo, String nombre) {
         super(codigo, nombre);
         this.maxPrestamos = 2;
+        carrera = "Licenciatura en musica";
     }
 }
 
@@ -206,5 +302,6 @@ class Doctor extends Estudiante {
     public Doctor(String codigo, String nombre) {
         super(codigo, nombre);
         this.maxPrestamos = 12;
+        carrera = "Medicina";
     }
 }
